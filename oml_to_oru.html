@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>HL7 to JSON</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    textarea, pre { width: 100%; height: 200px; }
+    button { margin-top: 10px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+
+  <h2>HL7 OML → JSON Escaped</h2>
+
+  <label for="hl7Input">Nhập bản tin HL7 OML trong "":</label><br>
+  <textarea id="hl7Input" placeholder="Dán bản tin HL7 OML vào đây..."></textarea><br>
+
+  <button onclick="convertToJSON()">Chuyển đổi sang JSON</button>
+  <button onclick="copyJSON()">📋 Sao chép JSON</button>
+
+  <h3>JSON Output:</h3>
+  <pre id="jsonOutput"></pre>
+
+  <script>
+    function escapeHL7String(str) {
+      return str
+        .replace(/\\/g, '\\\\')     // Escape backslashes
+        .replace(/"/g, '\\"')       // Escape double quotes
+        .replace(/\r/g, '\\r');     // Keep carriage return readable
+    }
+
+    function convertToJSON() {
+      const hl7Text = document.getElementById('hl7Input').value.trim();
+      if (!hl7Text) {
+        alert('Vui lòng dán dữ liệu HL7 trước.');
+        return;
+      }
+
+      const escaped = escapeHL7String(hl7Text);
+      const jsonData = {
+        data: escaped
+      };
+
+      const output = JSON.stringify(jsonData, null, 2);
+      document.getElementById('jsonOutput').textContent = output;
+    }
+
+    function copyJSON() {
+      const output = document.getElementById('jsonOutput').textContent;
+      if (!output) {
+        alert("Không có nội dung để sao chép.");
+        return;
+      }
+
+      navigator.clipboard.writeText(output).then(() => {
+        alert("✅ Đã sao chép JSON vào clipboard!");
+      }).catch(err => {
+        alert("❌ Không thể sao chép: " + err);
+      });
+    }
+  </script>
+
+</body>
+</html>
